@@ -1,6 +1,8 @@
 #include "core.hpp"
 #include "std.pb.h"
 #include <iostream>
+#define BLUE "\033[1;34m"
+#define RESET "\033[0m"
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {
@@ -26,7 +28,7 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        LOG(INFO) << "Request sent successfully. Do you want to cancel the request? (y/n): ";
+        LOG(INFO) << BLUE << "Request sent successfully. Do you want to cancel the request? (y/n): " << RESET;
         char user_input;
         std::cin >> user_input;
 

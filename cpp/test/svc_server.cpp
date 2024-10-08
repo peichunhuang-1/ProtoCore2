@@ -1,6 +1,8 @@
 #include "core.hpp"
 #include "std.pb.h"
 #include <iostream>
+#define BLUE "\033[1;34m"
+#define RESET "\033[0m"
 
 // Service callback function that handles requests and cancel prompts
 void service_cb(const std_msgs::String* request, std_msgs::String* reply,
@@ -13,7 +15,7 @@ void service_cb(const std_msgs::String* request, std_msgs::String* reply,
         // Always check if the server has been aborted at regular intervals
         if (service_server->isPrompted(stream_id)) {
             // If the client sends a cancel request, prompt the user to decide whether to accept or refuse
-            LOG(INFO) << "Client requested to cancel the service. Do you want to accept the cancellation? (y/n): ";
+            LOG(INFO) << BLUE << "Client requested to cancel the service. Do you want to accept the cancellation? (y/n): " << RESET;
             char user_input;
             std::cin >> user_input;
 

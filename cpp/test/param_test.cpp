@@ -1,6 +1,9 @@
 #include "core.hpp"
 #include "std.pb.h"
 
+#define BLUE "\033[1;34m"
+#define RESET "\033[0m"
+
 std::string param_str;
 
 // Callback function for dynamic parameter changes
@@ -59,7 +62,7 @@ int main(int argc, char* argv[]) {
         LOG(INFO) << "Current parameter value: " << string_param.data();
 
         // Prompt user for new parameter value
-        LOG(INFO) << "Enter a new value for 'string_param' (or type 'exit' to quit): ";
+        LOG(INFO) << BLUE << "Enter a new value for 'string_param' (or type 'exit' to quit): " << RESET;
         std::getline(std::cin, user_input);
 
         if (user_input == "exit") {

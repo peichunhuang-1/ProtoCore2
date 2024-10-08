@@ -1,6 +1,10 @@
 #include "core.hpp"
 #include "std.pb.h"
 
+#define BLUE "\033[1;34m"
+#define RESET "\033[0m"
+
+
 std::string param_str;
 
 // Callback function to handle changes to the remote parameter
@@ -27,7 +31,7 @@ int main(int argc, char* argv[]) {
 
     // Prompt user for the owner of the parameter
     std::string param_owner_name;
-    LOG(INFO) << "Enter the node name that owns the parameter 'string_param': ";
+    LOG(INFO)  << BLUE << "Enter the node name that owns the parameter 'string_param': " << RESET;
     std::getline(std::cin, param_owner_name);
 
     // Get the remote parameter initially
@@ -51,7 +55,7 @@ int main(int argc, char* argv[]) {
     while (core::ok()) {
         // Prompt user for a new value
         std::string user_input;
-        LOG(INFO) << "Enter a new value for 'string_param' (or type 'exit' to quit): ";
+        LOG(INFO) << BLUE << "Enter a new value for 'string_param' (or type 'exit' to quit): " << RESET;
         std::getline(std::cin, user_input);
 
         // Check if the user wants to exit
