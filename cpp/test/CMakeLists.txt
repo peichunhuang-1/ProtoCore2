@@ -58,7 +58,7 @@ registrar_grpc_proto
 std_proto
 rscl)
 
-add_executable(hello_transform_broadcast hello_transform_broadcast.cpp)
+add_executable(hello_transform_broadcast transform_broadcast_test.cpp)
 target_link_libraries(hello_transform_broadcast
 glog::glog 
 ${_REFLECTION} 
@@ -68,7 +68,7 @@ registrar_grpc_proto
 std_proto
 rscl)
 
-add_executable(hello_transform_listen hello_transform_listen.cpp)
+add_executable(hello_transform_listen transform_listen_test.cpp)
 target_link_libraries(hello_transform_listen
 glog::glog 
 ${_REFLECTION} 

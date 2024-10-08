@@ -240,9 +240,9 @@ ParameterStatus ParamRPCClientClub::getRemoteRequest(const string& name, void(*c
         reply_.payload().UnpackTo(&reply);
         cb(reply);
     };
+    get_requests_queue[namespace_].push(getRequestPack(request_, cb_wrapper));
 
     if (!clients.count(namespace_)) {
-        get_requests_queue[namespace_].push(getRequestPack(request_, cb_wrapper));
         return ParameterStatus::TMEP_NOT_AVALIABLE;
     }
     getParamRPCReply reply_;

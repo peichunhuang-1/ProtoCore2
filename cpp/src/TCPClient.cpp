@@ -107,11 +107,11 @@ void TCPClient::write_to_socket(const string& topic, const string& msg, const in
     for (auto fd: clients_topic_fd[topic]) {
         if (clients_data[fd].length() > MAX_WRITE_BUFFER_SIZE) continue;
         clients_data[fd].append(msg.data(), msg.length());
-        write_fd(topic, fd);
+        if (!write_fd(topic, fd)) return;
     }
 }
 
-void TCPClient::write_fd(const string& topic, const int& fd) {
+bool TCPClient::write_fd(const string& topic, const int& fd) {
     const string to_send = clients_data[fd];
     int n = to_send.length(); int siz = n;
     int nwrite = 0;
@@ -123,12 +123,13 @@ void TCPClient::write_fd(const string& topic, const int& fd) {
                 clients_topic_fd[topic].erase(fd);
                 clients_data[fd] = "";
                 close_and_delete_event(fd);
-                return;
+                return false;
             }
             else if (errno == EAGAIN) break;
         }
         n -= nwrite;
     }
     clients_data[fd].erase(0, siz - n);
+    return true;
 }
 }

@@ -29,7 +29,7 @@ class TCPClient final: public Socket {
     vector<string>                                      clients_data;
     void                                                close_and_delete_event(const int& fd);
     bool                                                get_socket_info(const int& fd, string& src_ip, int& src_port);   
-    void                                                write_fd(const string& topic, const int& fd);
+    bool                                                write_fd(const string& topic, const int& fd);
     shared_mutex                                        mtx;             
     unordered_map<string, unordered_set<string>>        static_topic_cache;         
 }; 

@@ -60,7 +60,7 @@ void TransformTreeNode::cleanup(google::protobuf::Timestamp current_time) {
     }
 }
 
-void TransformTreeNode::push(const std_msgs::TransformD& transform) {
+void TransformTreeNode::push(const std_msgs::TransformD transform) {
     value_time_series.insert({transform});
     google::protobuf::Timestamp current_time = value_time_series.rbegin()->transform.header().timestamp();
     cleanup(current_time);

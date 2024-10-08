@@ -11,17 +11,21 @@ int main(int argc, char* argv[]) {
     nh->Init();
     core::TransformListener tf_listner = nh->tfListener();
     std_msgs::TransformD transform;
-    core::Rate rate(10);
+    core::Rate rate(1);
     while(core::ok()) {
         nh->spinOnce();
-        tf_listner.lookupTransform("root", "frame_dynamic", transform); // transform: {}^{root}_{frame_dynamic}T
         LOG(INFO) << "Dynamic configuration";
+        tf_listner.lookupTransform("frame_dynamic", "frame_static2", transform);
         LOG(INFO) << transform.transition().x() << ", " << transform.transition().y() << ", " << transform.transition().z();
         LOG(INFO) << transform.rotation().x() << ", " << transform.rotation().y() << ", " << transform.rotation().z() << ", " << transform.rotation().w();
-        tf_listner.lookupTransform("root", "frame_static", transform); // transform: {}^{root}_{frame_static}T
+        // transform: {}^{frame_dynamic}_{frame_static2}T
+        // the dynamic transform will not reacheable whem the broadcaster close
         LOG(INFO) << "Static configuration";
+        tf_listner.lookupTransform("root", "frame_static2", transform); 
         LOG(INFO) << transform.transition().x() << ", " << transform.transition().y() << ", " << transform.transition().z();
         LOG(INFO) << transform.rotation().x() << ", " << transform.rotation().y() << ", " << transform.rotation().z() << ", " << transform.rotation().w();
+        // transform: {}^{root}_{frame_static2}T, the static transform can be reached once a node is alive, 
+        // even the original broadcaster has close
         rate.sleep();
     }
 }

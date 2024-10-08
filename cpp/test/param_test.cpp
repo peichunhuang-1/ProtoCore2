@@ -1,56 +1,79 @@
 #include "core.hpp"
 #include "std.pb.h"
+
 std::string param_str;
+
+// Callback function for dynamic parameter changes
 void cb(const std_msgs::String msg) {
-    // callback is not recommended to be blocked
     param_str = msg.data();
-    LOG(INFO) << "callback trigger, the value is changed to: " << param_str;
+    LOG(INFO) << "Callback triggered: the value is changed to: " << param_str;
 }
 
+// Callback function for constant parameter (should print only once)
 void cb_const(const std_msgs::String msg) {
-    LOG(INFO) << "this should print only once";
+    LOG(INFO) << "This should print only once";
 }
 
 int main(int argc, char* argv[]) {
+    // Check for required arguments
     if (argc < 3) {
-        LOG(WARNING) << "Require at least 2 argument: name, namespace, "
-        "\nand remember {$namespace$name} should be unique for each node";
+        LOG(WARNING) << "Usage: " << argv[0] << " <node_name> <namespace>";
+        LOG(WARNING) << "Error: Insufficient arguments. You need to provide a node name and namespace.";
+        LOG(WARNING) << "Reminder: The combination of namespace and name (i.e., {$namespace$name}) should be unique for each node.";
         return 1;
     }
-    std_msgs::String string_param; // for initialize param value when declare
+
+    // Initialize the string parameter
+    std_msgs::String string_param; 
     string_param.set_data("this is a constant");
 
+    // Create and initialize the NodeHandler
     std::shared_ptr<core::NodeHandler> nh = std::make_shared<core::NodeHandler>(argv[1], argv[2]);
     nh->Init();
-    nh->declareParameter("string_param_const", string_param, true); 
-    // declare a constant parameter, the parameter belongs to this node, 
-    // so the name of this parameter in global view is: argv[2]/argv[1]/string_param_const
-    nh->declareParameter("string_param", string_param, false);
-    // the name of this parameter in global view is: argv[2]/argv[1]/string_param
+
+    // Declare parameters
+    nh->declareParameter("string_param_const", string_param, true); // Constant parameter
+    nh->declareParameter("string_param", string_param, false); // Dynamic parameter
+
+    // Set initial values for parameters
+    nh->setParameter("string_param_const", string_param); // This won't change
     string_param.set_data("changed value");
-    nh->setParameter("string_param_const", string_param); 
-    // set the parameter value, the value will not change since this is declared as a constant
-    nh->setParameter("string_param", string_param);
-    // set the parameter value, the value will change, and notify all parameter user call getRemote/get
+    nh->setParameter("string_param", string_param); // This will change
 
-    if (nh->getParameter("string_param_const", string_param)) LOG(INFO) << "the constant param value is: " << string_param.data();
-    // a constant can get, but cannot change by set/setRemote
-    if (nh->getParameter("string_param", string_param)) LOG(INFO) << "the param value is: " << string_param.data();
-    // get local parameter once, if not decalred, return false, you can also setRemote from other node
-
-    nh->getDynamicParameter("string_param", cb); 
-    // will call the callback when parameter changed, there can be multiple callbacks for one parameter, 
-    // once you call the getDynamicParameter function, a new handler will be set, 
-    // so if you call in a infinite loop, there will be many callbacks working in background, 
-    // the constant will be trigger only the first time, it is legal to set dynamic callback to a constant, but no reason to do so
-    nh->getDynamicParameter("string_param_const", cb_const); 
-
-    core::Rate rate(10);
-    int counter = 0;
-    while(core::ok()) {
-        LOG(INFO) << "set parameter value to: " << ++counter;
-        string_param.set_data(std::to_string(counter));
-        nh->setParameter("string_param", string_param);
-        rate.sleep();
+    // Log the parameter values
+    if (nh->getParameter("string_param_const", string_param)) {
+        LOG(INFO) << "The constant param value is: " << string_param.data();
     }
+    if (nh->getParameter("string_param", string_param)) {
+        LOG(INFO) << "The dynamic param value is: " << string_param.data();
+    }
+
+    // Set dynamic callbacks for parameter changes
+    nh->getDynamicParameter("string_param", cb);
+    nh->getDynamicParameter("string_param_const", cb_const); // Triggered only once
+
+    // Main loop
+    core::Rate rate(1);
+    std::string user_input;
+    while (core::ok()) {
+        LOG(INFO) << "Current parameter value: " << string_param.data();
+
+        // Prompt user for new parameter value
+        LOG(INFO) << "Enter a new value for 'string_param' (or type 'exit' to quit): ";
+        std::getline(std::cin, user_input);
+
+        if (user_input == "exit") {
+            LOG(INFO) << "Exiting the program.";
+            break; // Exit the loop if the user types 'exit'
+        }
+
+        // Set the new parameter value based on user input
+        string_param.set_data(user_input);
+        nh->setParameter("string_param", string_param);
+        LOG(INFO) << "Parameter value set to: " << string_param.data();
+
+        rate.sleep(); // Maintain the loop rate
+    }
+
+    return 0;
 }

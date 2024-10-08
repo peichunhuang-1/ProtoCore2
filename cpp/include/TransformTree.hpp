@@ -15,7 +15,7 @@ class TransformTreeNode {
     TransformTreeNode(const string& id, const int memory_duration_ms = 1000);
     TransformTreeNode*                  parent;
     bool                                transform(KDL::Frame& frame, const google::protobuf::Timestamp least_stamp, int tolerance_ms);
-    void                                push(const std_msgs::TransformD& transform);
+    void                                push(const std_msgs::TransformD transform);
     const string                        frame_id;
     bool                                is_static = false;
     private:
