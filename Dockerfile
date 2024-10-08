@@ -78,6 +78,8 @@ RUN git clone https://github.com/google/glog.git -b v0.6.0 && \
     make install && \
     cd ../..
 
+RUN apt-get install -y libeigen3-dev
+
 RUN git clone https://github.com/orocos/orocos_kinematics_dynamics.git && \
     cd orocos_kinematics_dynamics/orocos_kdl && \
     mkdir build && \

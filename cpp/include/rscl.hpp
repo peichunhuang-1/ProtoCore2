@@ -170,10 +170,10 @@ namespace core {
         shared_ptr<core::NodeHandler>           nh_;
         ClientClub                              clients;
         shared_mutex                            mtx;
-        vector<const ConnectionRequest>         topic_requests;
-        vector<const ConnectionRequest>         service_requests;
-        vector<const ConnectionRequest>         param_requests;
-        vector<const ConnectionRequest>         tree_requests;
+        vector<ConnectionRequest>               topic_requests;
+        vector<ConnectionRequest>               service_requests;
+        vector<ConnectionRequest>               param_requests;
+        vector<ConnectionRequest>               tree_requests;
     };
     template<class msg_t>
     Subscriber NodeHandler::subscribe(const string& topic, void (*cb)(const msg_t*)) {
