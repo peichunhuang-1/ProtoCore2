@@ -109,6 +109,7 @@ int TCPServer::accept_new_client() {
     fd_to_addr[client_fd] = token;
     unmapped_addr_to_fd[token] = client_fd;
     LOG(INFO) << "TCP connection accepted, client info: " << token;
+    return 0;
 }
 
 void TCPServer::close_and_delete_event(const int& fd, const int& revents) {
@@ -167,7 +168,6 @@ void TCPServer::handle_client_event(const int& client_fd, const int& revents) {
 }
 
 int TCPServer::event_handler(int timeout) {
-    unique_lock<shared_mutex> lock(mtx);
     int ret = 0;
     int event_ret;
     int fd;
@@ -180,10 +180,12 @@ int TCPServer::event_handler(int timeout) {
     if (event_ret == 0) return 0;
 
     if (event_ret == -1) {
+        if (errno == EAGAIN) return 0; 
         LOG(ERROR) << "Failed to handle event: " << errno;
         return -1;
     }
 
+    unique_lock<shared_mutex> lock(mtx);
     for (int i = 0; i < event_ret; i++) {
     #ifdef __linux__
         fd = events[i].data.fd;
@@ -205,6 +207,7 @@ int TCPServer::event_handler(int timeout) {
         handle_client_event(fd, events[i].filter);
     #endif
     }
+    return ret;
 }
 
 }

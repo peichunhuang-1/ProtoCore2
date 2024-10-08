@@ -8,7 +8,7 @@ namespace core {
         int flags = fcntl(fd, F_GETFL, 0);
         if (flags == -1) {
             LOG(ERROR) << "Failed to get file flags: " << errno;
-            return -1; // early return
+            return -1;
         }
         if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
             LOG(ERROR) << "Failed to set non-blocking mode: " << errno;
@@ -49,7 +49,7 @@ namespace core {
         return 0;
     }
     int Socket::init_epoll() {
-        epoll_fd = epoll_create(255);
+        epoll_fd = epoll_create(maxevents);
         if (epoll_fd < 0) {
             LOG(ERROR) << "Failed to init epoll: " << errno;
             return -1;

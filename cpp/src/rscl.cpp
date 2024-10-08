@@ -42,7 +42,7 @@ void NodeHandler::Init() {
 }
 
 void NodeHandler::spinOnce() {
-    tcp_topic_server->event_handler();
+    int ret = tcp_topic_server->event_handler();
 }
 
 void NodeHandler::regist_node(const string& node, const string& ip, const int& port) {
