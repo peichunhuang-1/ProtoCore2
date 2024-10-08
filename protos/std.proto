@@ -1,0 +1,110 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+package std_msgs;
+
+message Header {
+    google.protobuf.Timestamp timestamp = 1;
+    int64                     seq = 2;
+    string                    frame_id = 3;    
+}
+
+message Vector3F {
+    float                     x = 1;
+    float                     y = 2;
+    float                     z = 3;
+}
+
+message Vector4F {
+    float                     x = 1;
+    float                     y = 2;
+    float                     z = 3;
+    float                     w = 4;
+}
+
+message Vector3D {
+    double                     x = 1;
+    double                     y = 2;
+    double                     z = 3;
+}
+
+message Vector4D {
+    double                     x = 1;
+    double                     y = 2;
+    double                     z = 3;
+    double                     w = 4;
+}
+
+message Int32 {
+    int32 data = 1;
+}
+
+message Int64 {
+    int64 data = 1;
+}
+
+message Bool {
+    bool data = 1;
+}
+
+message Float {
+    float data = 1;
+}
+
+message Double {
+    double data = 1;
+}
+
+message Int32MultiArray {
+    repeated int32 data = 1;
+}
+
+message Int64MultiArray {
+    repeated int64 data = 1;
+}
+
+message BoolMultiArray {
+    repeated bool data = 1;
+}
+
+message FloatMultiArray {
+    repeated float data = 1;
+}
+
+message DoubleMultiArray {
+    repeated double data = 1;
+}
+
+message String {
+    string data = 1;
+}
+
+message StringMultiArray {
+    repeated string data = 1;
+}
+
+message TransformF {
+    Header      header = 1;
+    string      child_frame_id = 2;
+    Vector3F    transition = 3;
+    Vector4F    rotation = 4;
+}
+
+message TransformD {
+    Header      header = 1;
+    string      child_frame_id = 2;
+    Vector3D    transition = 3;
+    Vector4D    rotation = 4;
+}
+
+message PointCloudF {
+    Header               header = 1;
+    repeated float       positions = 2; // xyz...xyz
+    repeated float       colors = 3; // rgb...rgb
+}
+
+message PointCloudD {
+    Header               header = 1;
+    repeated double      positions = 2; // xyz...xyz
+    repeated float       colors = 3; // rgb...rgb
+}

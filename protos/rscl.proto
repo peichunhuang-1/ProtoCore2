@@ -1,0 +1,23 @@
+syntax = "proto3";
+package rscl;
+
+service NodeConnection {
+  rpc TopicConnection (ConnectionRequest) returns (ConnectionReply) {}
+  rpc ServiceConnection (ConnectionRequest) returns (ConnectionReply) {}
+  rpc TreeConnection (ConnectionRequest) returns (ConnectionReply) {}
+}
+
+message ConnectionRequest {
+  string object = 1; // topic, service, tree name
+  string ip = 2; // tcp srv ip, service srv rpc ip, tree srv rpc ip
+  int32 port = 3;
+  string url = 4; // topic message type_url, empty, ...
+  string node = 5;
+}
+
+message ConnectionReply {
+  string object = 6; // topic, service, tree name
+  string ip = 7; // tcp clt ip, empty, ...
+  int32 port = 8;
+  string url = 9; // topic message type_url, empty, ...
+}

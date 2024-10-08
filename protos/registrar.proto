@@ -1,0 +1,26 @@
+syntax = "proto3";
+package registrar;
+
+message NodeInfo {
+  string ip = 1;
+  uint32 port = 2;
+  string node_name = 3;
+  enum operation_code {
+    ADD = 0;
+    DELETE = 1;
+  }
+  operation_code code = 4;
+}
+
+service Registration {
+  rpc Regist (RegistrationRequest) returns (stream RegistrationReply) {}
+}
+
+message RegistrationRequest {
+  NodeInfo info = 1;
+}
+
+message RegistrationReply {
+  uint32 version = 2;
+  repeated NodeInfo operation_cmd = 3;
+}

@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "google/protobuf/any.proto";
+package service_rpc;
+
+service ServiceRPC {
+  rpc ServicePullRequest (stream ServiceRPCRequest) returns (stream ServiceRPCReply) {}
+}
+
+message ServiceRPCRequest {
+    enum ServiceRPCSetting {
+        PULL_NEW_REQ            =  0;
+        SET_CANCELED            = -1;
+    };
+    ServiceRPCSetting   setting = 1;
+    google.protobuf.Any payload = 2;
+}
+
+message ServiceRPCReply {
+    enum ServiceRPCStatus {
+        SUSPEND                 =  0;
+        SUCCESS                 =  1; // success
+        PROCESS                 =  2;
+        ABORTED                 = -1; // abort by server
+        FAILED                  = -2; // failed.
+        PROMPTED                = -3; // received cancel, in pending.
+    };
+    ServiceRPCStatus    status  = 1;
+    google.protobuf.Any payload = 2;
+}
