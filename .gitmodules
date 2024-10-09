@@ -1,0 +1,3 @@
+[submodule "js/ProtoCoreJS"]
+	path = js/ProtoCoreJS
+	url = https://github.com/peichunhuang-1/ProtoCoreJS.git
