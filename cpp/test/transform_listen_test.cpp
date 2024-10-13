@@ -21,10 +21,10 @@ int main(int argc, char* argv[]) {
         // transform: {}^{frame_dynamic}_{frame_static2}T
         // the dynamic transform will not reacheable whem the broadcaster close
         LOG(INFO) << "Static configuration";
-        tf_listner.lookupTransform("root", "frame_static2", transform); 
+        tf_listner.lookupTransform("frame_static3", "frame_static2", transform); 
         LOG(INFO) << transform.transition().x() << ", " << transform.transition().y() << ", " << transform.transition().z();
         LOG(INFO) << transform.rotation().x() << ", " << transform.rotation().y() << ", " << transform.rotation().z() << ", " << transform.rotation().w();
-        // transform: {}^{root}_{frame_static2}T, the static transform can be reached once a node is alive, 
+        // transform: {}^{frame_static3}_{frame_static2}T, the static transform can be reached once a node is alive, 
         // even the original broadcaster has close
         rate.sleep();
     }

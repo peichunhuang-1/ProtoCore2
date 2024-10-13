@@ -29,11 +29,13 @@ void NodeHandler::Init() {
 
     this_node_tcp_port = tcp_topic_server->init_tcp_srv();
     connection_rpc_service = make_shared<NodeConnectionServerImpl>(shared_from_this());
+    node_command_service = make_shared<NodeCommandServerImpl>();
     ServerBuilder builder;
     int rpc_port_;
     builder.AddListeningPort(this_node_connection_rpc_ip+":0", grpc::InsecureServerCredentials(), &rpc_port_);
     builder.RegisterService(connection_rpc_service.get());
     builder.RegisterService(param_server.get());
+    builder.RegisterService(node_command_service.get());
     connection_rpc_server = builder.BuildAndStart();
     this_node_connection_rpc_port = rpc_port_;
 
@@ -59,9 +61,10 @@ void NodeHandler::delete_node(const string& node) {
 
 const string NodeHandler::this_node_name() {return name;}
 
-bool NodeHandler::find_wait_published_topic(const string& topic, const string& url) {
+bool NodeHandler::find_wait_published_topic(const string& topic, string& url) {
     shared_lock<shared_mutex> lock(topics_mtx);
     const string token = "p" + topic;
+    if (url == "*" && topics.count(token)) url = topics[token];
     return topics.count(token) && (topics[token] == url);
 }
 
@@ -156,7 +159,7 @@ const ConnectionRequest*request, ConnectionReply* reply) {
     const string topic = request->object();
     const string ip = request->ip();
     const int port = request->port();
-    const string type_url = request->url();
+    string type_url = request->url();
     while (core::ok() && !context->IsCancelled()) {
         if (nh_->find_wait_published_topic(topic, type_url)) {
             auto client_info = nh_->add_tcp_client(node, topic, ip, port);

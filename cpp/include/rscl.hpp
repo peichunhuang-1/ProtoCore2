@@ -15,6 +15,7 @@
 #include <mutex>
 #include <future>
 #include <memory>
+#include "NodeCommand.hpp"
 
 namespace core {
     using namespace rscl;
@@ -74,7 +75,7 @@ namespace core {
         void                                    delete_node(const string& node);
         const string                            this_node_name();
 
-        bool                                    find_wait_published_topic(const string& topic, const string& url);
+        bool                                    find_wait_published_topic(const string& topic, string& url);
         void                                    add_published_topic(const string& topic, const string& url);
         void                                    add_subscribed_topic(const string& topic, const string& url);
         client_info                             add_tcp_client(const string& node, const string& topic, const string& ip, const int& port);
@@ -112,6 +113,8 @@ namespace core {
 
         unordered_map<string, promise<string>>  services;
         shared_mutex                            services_mtx;
+
+        shared_ptr<NodeCommandServerImpl>       node_command_service;
 
         friend class                            core::NodeRegist;
         friend class                            core::NodeConnectionClient;
@@ -201,6 +204,7 @@ namespace core {
         string url = get_typeurl<msg_t>();
         add_published_topic(topic, url);
         connection_rpc_service->notify_all();
+        node_command_service->setTopic(topic);
         return Publisher<msg_t>(topic, shared_from_this());
     }
     template<typename T>
@@ -220,6 +224,7 @@ namespace core {
         if ( find_serving_service(service) ) return ServiceServer<Request, Reply>();
         add_serving_service(service);
         int service_server_port;
+        node_command_service->setService(service);
         return ServiceServer<Request, Reply>(service, this_node_connection_rpc_ip, service_server_port, cb, shared_from_this());
     }
     template<typename Request, typename Reply>
@@ -278,6 +283,7 @@ namespace core {
     template<typename param_t>
     void NodeHandler::declareParameter(const string& name, const param_t val, bool is_const) {
         param_server->declare(name, val, is_const);
+        node_command_service->setParam(name);
     }
     template<typename param_t>
     bool NodeHandler::getParameter(const string& name, param_t &val) {

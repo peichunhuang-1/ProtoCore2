@@ -1,4 +1,4 @@
-add_library(rscl rscl.cpp NodeRegist.cpp AsyncSocket.cpp TCPServer.cpp TCPClient.cpp ParamRPC.cpp TransformTree.cpp)
+add_library(rscl rscl.cpp NodeRegist.cpp AsyncSocket.cpp TCPServer.cpp TCPClient.cpp ParamRPC.cpp TransformTree.cpp NodeCommand.cpp)
 
 target_link_libraries(rscl 
 glog::glog 
@@ -10,6 +10,7 @@ registrar_grpc_proto
 std_proto
 service_grpc_proto
 param_grpc_proto
+cmd_grpc_proto
 ${orocos_kdl_LIBRARIES})
 
 add_executable(NodeCore Registrar.cpp)

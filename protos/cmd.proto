@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package cmd;
+
+service NodeCommand {
+  rpc getInfo (getInfoRequest) returns (stream getInfoReply) {}
+  rpc kill(google.protobuf.Empty) returns(google.protobuf.Empty) {}
+}
+
+message getInfoRequest {
+  enum InfoType {
+    NONE      = 0;
+    TOPIC     = 0x01;
+    SERVICE   = 0x02;
+    PARAM     = 0x04;
+    ALL       = 0x0F;
+  }
+  InfoType    type = 1;
+}
+
+message getInfoReply {
+  repeated string topics = 1;
+  repeated string services = 2;
+  repeated string params = 3;
+}
