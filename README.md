@@ -47,7 +47,7 @@ Install grpc, kdl, etc. and the remainder is same as Option 1.
 
 **Environment**
 
-There are 3 environment variables in this protocol, is remain unset, the local ip and master address would set to localhost and a default port, and the log would be directly write to stdout.
+There are 3 environment variables in this protocol, if remain unset, the local ip and master address would set to localhost and a default port, and the log would be directly write to stdout.
 ```bash
 export CORE_LOCAL_IP="127.0.0.1"
 ```
